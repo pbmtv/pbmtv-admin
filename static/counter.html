@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="socket.io.js"></script>
     <script>
-        const socket = io("https://sm1.pbmtv.org:3000");
+        const socket = io();
         socket.on('live count', (data) => {
             document.getElementById("pbmtv_live_counter").innerText = data;
         });

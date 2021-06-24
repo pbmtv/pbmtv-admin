@@ -7,34 +7,27 @@ class Streams extends React.Component {
         super(props);
         this.state = {
             selectedVideo: "",
-            availableVideos: [
-                {
-                    name: "pbmtv",
-                    url: "https://sm1.pbmtv.org/pbmtv/live/playlist.m3u8",
-                    active: false
-                },
-                {
-                    name: "pbmtv1",
-                    url: "https://sm1.pbmtv.org/pbmtvincoming1/live/playlist.m3u8",
-                    active: false
-                },
-                {
-                    name: "pbmtv2",
-                    url: "https://sm1.pbmtv.org/pbmtvincoming2/live/playlist.m3u8",
-                    active: false
-                },
-                {
-                    name: "pbmtv3",
-                    url: "https://sm1.pbmtv.org/pbmtvincoming3/live/playlist.m3u8",
-                    active: false
-                }
-            ]
+            availableVideos: []
         };
 
     }
     componentDidMount() {
-        this.getStates();
-        this.interval = setInterval(() => this.getStates(), 15000);
+        const currentUrl = window.location.protocol + '//' + window.location.hostname;
+        console.log(currentUrl);
+        const url = new URL(currentUrl + ':3030/wms/live_streams');
+        fetch(url).then(response => response.json()).then((response) => {
+            console.log(response);
+            const streams = response.streams.map((stream) => {
+                return {
+                    id: stream.id,
+                    name: `${stream.application}/${stream.stream}`,
+                    url: `https://sm1.pbmtv.org/${stream.application}/${stream.stream}/playlist.m3u8`
+                }
+            })
+            this.setState({ availableVideos: streams })
+            this.getStates();
+            this.interval = setInterval(() => this.getStates(), 15000);
+        });
     }
 
     componentWillUnmount() {
@@ -43,7 +36,7 @@ class Streams extends React.Component {
 
     listItems() {
         return this.state.availableVideos.map((item)  => (
-            <ListGroup.Item action="true" onClick={() => this.playVideo(item.url)} key={item.name}>
+            <ListGroup.Item action="true" onClick={() => this.playVideo(item.url)} key={item.id}>
                 <i className={ "bi bi-record-fill " + (item.active ? "text-success" : "text-danger")}/> {item.name}
             </ListGroup.Item>
         ));

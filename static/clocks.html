@@ -1,0 +1,109 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+       td {
+            padding: 0 10px;
+            text-align: left;
+            display: block;
+            background-color: #000;
+            border: none;
+            vertical-align: middle;
+        }
+
+        span {
+            white-space: nowrap;
+            font-family: Impact, sans-serif;
+            font-size: 24px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        table {
+            margin: 0;
+        }
+
+        body {
+            border: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+    </style>
+    <title>PBMTV Clocks</title>
+    <script type="text/javascript" src="node_modules/luxon/build/global/luxon.js"></script>
+    <script>
+        var DateTime = luxon.DateTime;
+        function showTime(container, tz) {
+            var date = new DateTime.now().setZone(tz).toFormat('hh:mm a');
+            document.getElementById(container).innerText = date;
+        }
+        function init() {
+            showTime('t1', 'Pacific/Honolulu');
+            showTime('t2', 'America/Los_Angeles');
+            showTime('t3', 'America/New_York');
+            showTime('t4', 'America/Sao_Paulo');
+            showTime('t5', 'Europe/Paris');
+            showTime('t6', 'Asia/Aqtobe');
+            showTime('t7', 'Asia/Kuala_Lumpur');
+            showTime('t8', 'Australia/Queensland');
+            setInterval(() => showTime('t1', 'Pacific/Honolulu'), 60000);
+            setInterval(() => showTime('t2', 'America/Los_Angeles'), 60000);
+            setInterval(() => showTime('t3', 'America/New_York'), 60000);
+            setInterval(() => showTime('t4', 'America/Sao_Paulo'), 60000);
+            setInterval(() => showTime('t5', 'Europe/Paris'), 60000);
+            setInterval(() => showTime('t6', 'Asia/Aqtobe'), 60000);
+            setInterval(() => showTime('t7', 'Asia/Kuala_Lumpur'), 60000);
+            setInterval(() => showTime('t8', 'Australia/Queensland'), 60000);
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tbody>
+            <tr>
+                <td>
+                    <span id="t1"></span>&nbsp;<span>HST</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="t2"></span>&nbsp;<span>PST</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="t3"></span>&nbsp;<span>EST</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="t4"></span>&nbsp;<span>BRT</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="t5"></span>&nbsp;<span>CEST</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="t6"></span>&nbsp;<span>PKT</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="t7"></span>&nbsp;<span>MYT</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="t8"></span>&nbsp;<span>AEST</span></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
