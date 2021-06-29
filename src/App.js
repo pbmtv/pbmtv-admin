@@ -10,6 +10,7 @@ import {
     Link
 } from "react-router-dom";
 import Streams from "./Streams";
+import Links from "./LInks";
 
 const socket = io("https://sm1.pbmtv.org:3000");
 
@@ -31,6 +32,7 @@ class App extends React.Component {
             <Navbar.Brand>PBMTV Admin</Navbar.Brand>
               <Nav className="mr-auto">
                   <Nav.Link as={Link} to="/streams">Streams</Nav.Link>
+                  <Nav.Link as={Link} to="/links">Links</Nav.Link>
               </Nav>
               <i className="bi bi-person"/> {this.state.viewers}
           </Navbar>
@@ -38,6 +40,9 @@ class App extends React.Component {
               <Switch>
                   <Route path="/streams">
                       <Streams />
+                  </Route>
+                  <Route path="/links">
+                      <Links />
                   </Route>
               </Switch>
       </Router>
