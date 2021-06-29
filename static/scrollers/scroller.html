@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- Set obs browser source to canvas width and 55 height -->
+<html lang="en">
+<head>
+    <title>PBMTV File Scroller</title>
+    <style>
+        @font-face {font-family: "Arial Rounded MT Bold"; src: url(ef6bdf5ef216552c7e9869841e891ca0.woff2)}
+
+        html {
+            background-color: black;
+        }
+        body {
+            background-color: transparent !important;
+            margin: 0;
+            padding: 0;
+            /*width: 1280px;*/
+            color: #FFFFFF;
+            overflow: visible;
+        }
+
+        marquee#scrollText{
+            font-family: Arial Rounded MT Bold,Helvetica Rounded,Arial,sans-serif;
+            font-size: 24pt;
+            color: #FFFFFF !important;
+            font-weight: 600;
+            font-style: italic;
+            white-space: nowrap;
+            overflow: visible;
+        }
+        marquee span {
+            padding-right: 40px;
+        }
+    </style>
+    <script>
+        function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let fetchedData;
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const currentDay = new Date().getDay();
+            const file = urlParams.get('file') || days[currentDay];
+            fetch(`./${file}.txt`)
+                .then(response => response.text())
+                .then((data) => {
+                    if (fetchedData !== data) {
+                        fetchedData = data;
+                        const scrollText = document.getElementById('scrollText');
+                        // use spans to get around chrome cutting off long text
+                        scrollText.innerHTML = '<span>' + htmlEntities(data).replace(/[\r\n]/g, "</span><span>") + '</span>';
+                    }
+                });
+            setTimeout(() => init(), 60000);
+        }
+        function htmlEntities(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    </script>
+</head>
+<body onload="init()">
+    <marquee id="scrollText" height="40" scrollamount="6.5"></marquee>
+</body>
+</html>
