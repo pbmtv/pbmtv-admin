@@ -2,6 +2,18 @@ import React from "react";
 import {ListGroup} from "react-bootstrap";
 import ReactPlayer from "react-player";
 
+function alphaSort(a, b) {
+    if (a.name.toUpperCase() < b.name.toUpperCase())
+        return -1;
+    return 1;
+}
+function activeSort(a, b) {
+    if (a.active && !b.active)
+        return -1;
+    return 1;
+
+}
+
 class Streams extends React.Component {
     constructor(props) {
         super(props);
@@ -35,7 +47,7 @@ class Streams extends React.Component {
     }
 
     listItems() {
-        return this.state.availableVideos.map((item)  => (
+        return this.state.availableVideos.sort(alphaSort).sort(activeSort).map((item)  => (
             <ListGroup.Item action="true" onClick={() => this.playVideo(item.url)} key={item.id}>
                 <i className={ "bi bi-record-fill " + (item.active ? "text-success" : "text-danger")}/> {item.name}
             </ListGroup.Item>
@@ -65,7 +77,14 @@ class Streams extends React.Component {
                 <h1>Available Streams</h1>
                 <ReactPlayer playing
                              url={this.state.selectedVideo}
-                             controls={true}/>
+                             controls={true}
+                             config={{
+                                file: {
+                                    hlsOptions: {
+                                        lowLatencyMode: true
+                                    }
+                                }
+                             }}/>
                 <ListGroup>{this.listItems()}</ListGroup>
             </div>
         )

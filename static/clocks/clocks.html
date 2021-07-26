@@ -1,0 +1,73 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+       td {
+            padding: 0 10px;
+            text-align: left;
+            display: block;
+            background-color: #000;
+            border: none;
+            vertical-align: middle;
+        }
+
+        span {
+            white-space: nowrap;
+            font-family: Impact, sans-serif;
+            font-size: 24px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        table {
+            margin: 0;
+        }
+
+        body {
+            border: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+    </style>
+    <title>PBMTV Clocks</title>
+    <script type="text/javascript" src="./node_modules/luxon/build/global/luxon.js"></script>
+    <script>
+        const DateTime = luxon.DateTime;
+        const defaultTimezones = ['Pacific/Honolulu', 'America/Los_Angeles', 'America/New_York', 'America/Sao_Paulo', 'Europe/Paris', 'Asia/Aqtobe', 'Asia/Kuala_Lumpur', 'Australia/Queensland'];
+        const defaultShorthand = ['HST', 'PST', 'EST', 'BRT', 'CEST', 'PKT', 'MYT', 'AEST'];
+        const urlParams = new URLSearchParams(window.location.search);
+        const timeZoneParams = urlParams.get('tz');
+        const shortHandParams = urlParams.get('sh') || '';
+
+        const timeZones = timeZoneParams ? timeZoneParams.split(',') : defaultTimezones;
+        const shortHands = timeZones === defaultTimezones ? defaultShorthand : shortHandParams.split(',');
+
+        function createTableRow(i) {
+            const tzbody = document.getElementById('timezoneBody');
+            tzbody.innerHTML += `<tr><td><span id="t${i}"></span>&nbsp;<span id="s${i}">${shortHands[i] || ''}</span></td></tr>`;
+        }
+        function showTime(tz, i) {
+            const date = new DateTime.now().setZone(tz);
+            const formattedDate = shortHands[i] ? date.toFormat('hh:mm a') : date.toFormat('hh:mm a ZZZZ');
+            document.getElementById(`t${i}`).innerText = formattedDate;
+        }
+
+        function init() {
+            timeZones.forEach((tz, i) => {
+                createTableRow(i);
+                showTime(tz, i);
+                setInterval(() => showTime(tz, i), 60000);
+            });
+        }
+    </script>
+</head>
+
+<body onload="init()">
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tbody id="timezoneBody">
+        </tbody>
+    </table>
+</body>
+</html>

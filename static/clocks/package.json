@@ -1,0 +1,14 @@
+{
+  "name": "pbmtv-obs-world-clocks",
+  "version": "1.0.0",
+  "description": "World Clocks for use in OBS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "luxon": "^1.28.0"
+  }
+}
