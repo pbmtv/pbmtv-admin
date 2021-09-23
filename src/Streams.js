@@ -1,5 +1,5 @@
 import React from "react";
-import {ListGroup} from "react-bootstrap";
+import {ListGroup, Row, Col} from "react-bootstrap";
 import ReactPlayer from "react-player";
 import {SocketContext} from "./context/socket";
 
@@ -14,7 +14,8 @@ class Streams extends React.Component {
         super(props);
         this.state = {
             selectedVideo: "",
-            availableVideos: []
+            availableVideos: [],
+            imageHash: Date.now()
         };
     }
     componentDidMount() {
@@ -25,39 +26,67 @@ class Streams extends React.Component {
         this.socket.emit('get_streams', (data) => {
             this.setState({ availableVideos: data });
         })
+        this.hashInterval = setInterval(() => {
+            this.setState({ imageHash: Date.now()});
+        }, 10000);
     }
 
     componentWillUnmount() {
         this.socket.off('streams');
+        clearInterval(this.hashInterval);
+    }
+
+    isAudio(stream) {
+        return (stream.startsWith('radio') || stream === 'pbmtv/live_audio');
+    }
+    isVideo(stream) {
+        return (stream.startsWith('artist') || stream.startsWith('pbmtv') || stream.startsWith('stream')) && stream !== 'pbmtv/live_audio';
     }
 
     listItems() {
-        return this.state.availableVideos.sort(alphaSort).map((item, i)  => (
-            <ListGroup.Item action="true" onClick={() => this.playVideo(item)} key={i}>
-                {item}
-            </ListGroup.Item>
-        ));
+        return this.state.availableVideos.sort(alphaSort).map((stream, i)  => (
+              <ListGroup.Item action="true" onClick={() => this.playVideo(stream)} key={i}>
+                  <span style={{width: "110px", display: "inline-block"}} >
+                    { this.isVideo(stream) &&
+                        <img src={`https://sm1.pbmtv.org/${stream}/thumbnail.jpg?${this.state.imageHash}`} width="100" />
+                    }
+                      { this.isAudio(stream)  &&
+                      <i className="bi bi-music-note-beamed" style={{width: "100px"}} />
+                      }
+                  </span>
+                  {stream}
+              </ListGroup.Item>
+            )
+        );
     }
 
     playVideo(stream) {
-        this.setState({selectedVideo: `https://sm1.pbmtv.org/${stream}/playlist.m3u8`});
+        if (this.isVideo(stream) || stream === 'pbmtv/live_audio') {
+            this.setState({selectedVideo: `https://sm1.pbmtv.org/${stream}/playlist.m3u8`});
+        } else if (this.isAudio(stream) && stream !== 'pbmtv/live_audio') {
+            this.setState({selectedVideo: `https://sm1.pbmtv.org/${stream}/icecast.audio`});
+        }
     }
 
     render() {
         return (
             <div>
-                <h1>Available Streams</h1>
-                <ReactPlayer playing
-                             url={this.state.selectedVideo}
-                             controls={true}
-                             config={{
-                                file: {
-                                    hlsOptions: {
-                                        lowLatencyMode: true
-                                    }
-                                }
-                             }}/>
-                <ListGroup>{this.listItems()}</ListGroup>
+                <h1>Live Streams</h1>
+                <Row>
+                    <Col xs lg="4"><ListGroup>{this.listItems()}</ListGroup></Col>
+                    <Col md="auto">
+                        <ReactPlayer playing
+                                     url={this.state.selectedVideo}
+                                     controls={true}
+                                     config={{
+                                        file: {
+                                            hlsOptions: {
+                                                lowLatencyMode: true
+                                            }
+                                        }
+                                     }}/>
+                    </Col>
+                </Row>
             </div>
         )
     }

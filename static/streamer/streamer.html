@@ -1,0 +1,45 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>PBMTV Artist Streamer</title>
+    <script type="text/javascript" src="sldp-v2.18.1.min.js"></script>
+    <style>
+        body {
+            border: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", initPlayer);
+        function initPlayer(){
+            const urlParams = new URLSearchParams(window.location.search);
+            const artist = urlParams.get('artist');
+            const url = artist ? `artist/${artist}` : "pbmtv/live"
+            sldpPlayer = SLDP.init({
+                container:          'player',
+                stream_url:         `wss://sm1.pbmtv.org/${url}`,
+                // fullscreen: true,
+                // initial_resolution: '1080p',
+                // buffering:          500,
+                autoplay:           true,
+                controls: false,
+                height:             1080,
+                width:              1920
+            });
+        };
+
+        function removePlayer(){
+            sldpPlayer.destroy(function () {
+                console.log('SLDP Player is destroyed.');
+            });
+        }
+    </script>
+</head>
+
+<body>
+<div id="player"></div>
+</body>
+</html>

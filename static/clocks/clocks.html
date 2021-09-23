@@ -50,8 +50,7 @@
         }
         function showTime(tz, i) {
             const date = new DateTime.now().setZone(tz);
-            const formattedDate = shortHands[i] ? date.toFormat('hh:mm a') : date.toFormat('hh:mm a ZZZZ');
-            document.getElementById(`t${i}`).innerText = formattedDate;
+            document.getElementById(`t${i}`).innerText = shortHands[i] ? date.toFormat('hh:mm a') : date.toFormat('hh:mm a ZZZZ');
         }
 
         function init() {
