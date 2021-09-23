@@ -2,7 +2,6 @@ import './App.css';
 import React from "react";
 import {Navbar, Nav} from "react-bootstrap";
 import './Streams';
-import io from "socket.io-client";
 import {
     BrowserRouter as Router,
     Switch,
@@ -11,8 +10,7 @@ import {
 } from "react-router-dom";
 import Streams from "./Streams";
 import Links from "./LInks";
-
-const socket = io("https://sm1.pbmtv.org:3000");
+import {SocketContext, socket} from './context/socket';
 
 class App extends React.Component {
     constructor(props) {
@@ -25,26 +23,28 @@ class App extends React.Component {
         });
     }
 
-  render() {
+    render() {
       return (
           <Router>
-          <Navbar bg="light">
-            <Navbar.Brand>PBMTV Admin</Navbar.Brand>
-              <Nav className="mr-auto">
-                  <Nav.Link as={Link} to="/streams">Streams</Nav.Link>
-                  <Nav.Link as={Link} to="/links">Links</Nav.Link>
-              </Nav>
-              <i className="bi bi-person"/> {this.state.viewers}
-          </Navbar>
+              <SocketContext.Provider value={socket}>
+                  <Navbar bg="light">
+                    <Navbar.Brand>PBMTV Admin</Navbar.Brand>
+                      <Nav className="mr-auto">
+                          <Nav.Link as={Link} to="/streams">Streams</Nav.Link>
+                          <Nav.Link as={Link} to="/links">Links</Nav.Link>
+                      </Nav>
+                      <i className="bi bi-person"/> {this.state.viewers}
+                  </Navbar>
 
-              <Switch>
-                  <Route path="/streams">
-                      <Streams />
-                  </Route>
-                  <Route path="/links">
-                      <Links />
-                  </Route>
-              </Switch>
+                  <Switch>
+                      <Route path="/streams">
+                          <Streams />
+                      </Route>
+                      <Route path="/links">
+                          <Links />
+                      </Route>
+                  </Switch>
+              </SocketContext.Provider>
       </Router>
     )
     }
