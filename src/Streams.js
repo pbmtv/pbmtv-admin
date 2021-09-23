@@ -28,7 +28,7 @@ class Streams extends React.Component {
         })
         this.hashInterval = setInterval(() => {
             this.setState({ imageHash: Date.now()});
-        }, 10000);
+        }, 60000);
     }
 
     componentWillUnmount() {
@@ -37,27 +37,22 @@ class Streams extends React.Component {
     }
 
     isAudio(stream) {
-        return (stream.startsWith('radio') || stream === 'pbmtv/live_audio');
+        return (stream.startsWith('radio'));
     }
     isVideo(stream) {
-        return (stream.startsWith('artist') || stream.startsWith('pbmtv') || stream.startsWith('stream')) && stream !== 'pbmtv/live_audio';
+        return (stream.startsWith('artist') || stream.startsWith('pbmtv') || stream.startsWith('stream'))
+            && !stream.endsWith('0p') && !stream.endsWith('live_audio');
     }
 
     listItems() {
-        return this.state.availableVideos.sort(alphaSort).map((stream, i)  => (
-              <ListGroup.Item action="true" onClick={() => this.playVideo(stream)} key={i}>
-                  <span style={{width: "110px", display: "inline-block"}} >
-                    { this.isVideo(stream) &&
-                        <img src={`https://sm1.pbmtv.org/${stream}/thumbnail.jpg?${this.state.imageHash}`} width="100" />
-                    }
-                      { this.isAudio(stream)  &&
-                      <i className="bi bi-music-note-beamed" style={{width: "100px"}} />
-                      }
-                  </span>
-                  {stream}
-              </ListGroup.Item>
-            )
-        );
+        return this.state.availableVideos.sort(alphaSort).filter(this.isVideo).map((stream, i)  => (
+            <ListGroup.Item action="true" onClick={() => this.playVideo(stream)} key={i}>
+                <span style={{width: "110px", display: "inline-block"}}>
+                    <img src={`https://sm1.pbmtv.org/${stream}/thumbnail.jpg?${this.state.imageHash}`} width="100"/>
+                </span>
+                {stream}
+            </ListGroup.Item>
+        ));
     }
 
     playVideo(stream) {
